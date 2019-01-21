@@ -1,0 +1,34 @@
+paths:
+  /token:
+    post:
+      tags:
+        - Token
+      summary: Creates a new token (demo, demo)
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          username: Username
+          password: Password
+          required: true
+          schema:
+            $ref: '#/definitions/login'
+      responses:
+        200:
+          description: An object with token
+          schema:
+            $ref: '#/definitions/token'
+definitions:
+  login:
+    type: object
+    properties:
+      username:
+        type: string
+      password:
+        type: string
+  token:
+    type: object
+    properties:
+      token:
+        type: string

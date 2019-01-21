@@ -1,0 +1,8 @@
+export enum HttpStatus {
+    OK = 200,
+    MOVED_PERMANENTLY = 301,
+    FORBIDDEN = 403,
+    UNAUTHORIZED = 401,
+    NOT_FOUND = 404,
+    INTERNAL_SERVER_ERROR = 500,
+}

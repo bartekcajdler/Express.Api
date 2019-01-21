@@ -1,0 +1,42 @@
+paths:
+  /:
+    get:
+      tags:
+        - Index
+      summary: Get api info endpoint
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+      responses:
+        200:
+          description: Api version info
+  /ping:
+    get:
+      tags:
+        - Index
+      summary: Ping endpoint
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+      responses:
+        200:
+          description: Pong response
+  /ping-auth:
+    get:
+      tags:
+        - Index
+      summary: Ping endpoint with authorization
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          required: false
+      responses:
+        200:
+          description: Pong response
