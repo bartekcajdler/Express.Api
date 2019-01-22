@@ -40,3 +40,27 @@ paths:
       responses:
         200:
           description: Pong response
+  /user:
+    get:
+      tags:
+        - Index
+      summary: User data
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+      responses:
+        200:
+          description: An object with token
+          schema:
+            $ref: '#/definitions/user'
+definitions:
+  user:
+    type: object
+    properties:
+      login:
+        type: string
+      createdAt:
+        type: string

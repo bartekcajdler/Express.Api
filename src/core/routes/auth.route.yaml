@@ -9,7 +9,7 @@ paths:
       parameters:
         - in: body
           name: body
-          username: Username
+          login: Login
           password: Password
           required: true
           schema:
@@ -23,7 +23,7 @@ definitions:
   login:
     type: object
     properties:
-      username:
+      login:
         type: string
       password:
         type: string

@@ -14,7 +14,7 @@ const consoleTransportOptionsFormat = combine(
     timestamp({
         format: 'YYYY-MM-DD HH:mm:ss'
     }),
-    label({ label: 'Tacho.Payments.Api' }),
+    label({ label: 'Express.Api' }),
     prettyPrint(),
     colorize(),
     customFormat
@@ -24,7 +24,7 @@ const dailyRotateFileTransportOptionsFormat = combine(
     timestamp({
         format: 'YYYY-MM-DD HH:mm:ss'
     }),
-    label({ label: 'Tacho.Payments.Api' }),
+    label({ label: 'Express.Api' }),
     prettyPrint(),
     customFormat
 );

@@ -6,6 +6,7 @@ import { IAuthMiddleware } from '../middlewares';
 import { types } from '../index';
 import config from '../../config';
 import * as ip from 'ip';
+import { IUserService } from "../services";
 
 export interface IIndexRoute extends IRotue {
 }
@@ -14,7 +15,8 @@ export interface IIndexRoute extends IRotue {
 export class IndexRoute extends Route implements IIndexRoute {
 
     constructor(
-        @inject(types.AUTH_MIDDLEWARE) private authMiddleware: IAuthMiddleware
+        @inject(types.IAuthMiddleware) private authMiddleware: IAuthMiddleware,
+        @inject(types.IUserService) private userService: IUserService,
     ) {
         super();
         this.onInit();
@@ -24,6 +26,7 @@ export class IndexRoute extends Route implements IIndexRoute {
         this.router.get('/', this.getApiVersion);
         this.router.get('/ping', this.getPing);
         this.router.get('/ping-auth', this.authMiddleware.tokenGuard, this.getPing);
+        this.router.get('/user', this.authMiddleware.tokenGuard, this.getUser);
     }
 
     getApiVersion = async (req: Request, res: Response): Promise<Response> => {
@@ -38,5 +41,13 @@ export class IndexRoute extends Route implements IIndexRoute {
         return res.status(HttpStatus.OK).json({
             message: `Pong. Time: ${new Date()}.`
         });
+    };
+
+    getUser = async (req: Request, res: Response): Promise<Response> => {
+        const userId = req['userId'];
+
+        const user = await this.userService.getUser(userId);
+
+        return res.status(HttpStatus.OK).json(user);
     };
 }

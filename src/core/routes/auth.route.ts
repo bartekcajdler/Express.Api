@@ -3,12 +3,11 @@ import { inject, injectable } from 'inversify';
 import { Request, Response } from 'express';
 import { HttpStatus } from '../../server/httpStatus';
 import { IRotue, Route } from './route';
-import { IAuthMiddleware } from '../middlewares';
 import { types } from '../index';
-import { ITokenService } from '../services';
-import { userValidator } from '../validators/user.validator';
+import { ITokenService, IUserService } from '../services';
+import { loginValidator } from '../validators/login.validator';
 import logger from '../../logger';
-import config from '../../config';
+import { Login } from "../models/login.model";
 
 export interface IAuthRoute extends IRotue {
 }
@@ -17,8 +16,8 @@ export interface IAuthRoute extends IRotue {
 export class AuthRoute extends Route implements IAuthRoute {
 
     constructor(
-        @inject(types.AUTH_MIDDLEWARE) private authMiddleware: IAuthMiddleware,
-        @inject(types.TOKEN_SERVICE) private tokenService: ITokenService,
+        @inject(types.ITokenService) private tokenService: ITokenService,
+        @inject(types.IUserService) private userService: IUserService
     ) {
         super();
         this.onInit();
@@ -30,15 +29,17 @@ export class AuthRoute extends Route implements IAuthRoute {
 
     createToken = async (req: Request, res: Response): Promise<Response> => {
         try {
-            const data = {
-                username: req.body['username'],
+            const data: Login = {
+                login: req.body['login'],
                 password: req.body['password'],
             };
 
-            await joi.validate(data, userValidator);
+            await joi.validate(data, loginValidator);
 
-            if (data.username === config.username && data.password === config.password) {
-                const token = await this.tokenService.createToken(38);
+            const userId = await this.userService.verifyUser(data.login, data.password);
+
+            if (userId) {
+                const token = await this.tokenService.createToken(userId);
                 return res
                     .status(HttpStatus.OK)
                     .json({token});
@@ -52,5 +53,4 @@ export class AuthRoute extends Route implements IAuthRoute {
                 .json(error);
         }
     };
-
 }

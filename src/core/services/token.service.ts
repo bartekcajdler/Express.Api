@@ -1,17 +1,17 @@
 import * as jwtToken from 'jsonwebtoken';
-import config from '../../config';
-import { UserData } from '../models/user-data.model';
+import { Token } from '../models/token.model';
 import { injectable } from 'inversify';
+import config from '../../config';
 
 export interface ITokenService {
     createToken(userId: number): Promise<string>;
-    verifyToken(token: string): Promise<UserData>;
+    verifyToken(token: string): Promise<Token>;
 }
 
 @injectable()
 export class TokenService implements ITokenService {
 
-    createToken(userId: number): Promise<string> {
+    async createToken(userId: number): Promise<string> {
         const expiredTime = config.token_expires,
             secret = config.token_secret;
         return new Promise(((resolve, reject) => {
@@ -30,7 +30,7 @@ export class TokenService implements ITokenService {
         }));
     }
 
-    async verifyToken(token: string): Promise<UserData> {
+    async verifyToken(token: string): Promise<Token> {
         const secret = config.token_secret;
         return new Promise(((resolve, reject) => {
             jwtToken.verify(
@@ -40,7 +40,7 @@ export class TokenService implements ITokenService {
                     reject(err);
                     return;
                 }
-                resolve(decoded as UserData)
+                resolve(decoded as Token)
             });
         }));
     }

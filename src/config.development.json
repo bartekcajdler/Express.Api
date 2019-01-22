@@ -11,6 +11,7 @@
      "logs_folder": "logs",
      "token_expires": 36000,
      "token_secret": "secret",
+     "password_secret": "secret",
      "db_host" : "localhost",
      "db_user": "root",
      "db_password": "test",

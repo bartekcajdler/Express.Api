@@ -1,8 +1,12 @@
 const types = {
-    TOKEN_SERVICE: Symbol.for('token.service'),
-    UTLIS_SERVICE: Symbol.for('utils.service'),
-    AUTH_MIDDLEWARE: Symbol.for('auth.middleware'),
-    INDEX_ROUTE: Symbol.for('index.route'),
+    ITokenService: Symbol.for('token.service'),
+    IUtlisService: Symbol.for('utils.service'),
+    IPasswordService: Symbol.for('password.service'),
+    IUserService: Symbol.for('user.service'),
+    IUserRepository: Symbol.for('user.repository'),
+    IAuthMiddleware: Symbol.for('auth.middleware'),
+    IIndexRoute: Symbol.for('index.route'),
+    IAuthRoute: Symbol.for('auth.route')
 };
 
 export { types };

@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 import { Request, Response, NextFunction } from 'express';
 import { HttpStatus } from '../../server/httpStatus';
-import { UserData } from '../models/user-data.model';
+import { Token } from '../models/token.model';
 import { types } from '../index';
 import { ITokenService } from '../services';
 import logger from '../../logger/index';
@@ -14,7 +14,7 @@ export interface IAuthMiddleware {
 export class AuthMiddleware implements IAuthMiddleware {
 
     constructor(
-        @inject(types.TOKEN_SERVICE) private tokenService: ITokenService) {
+        @inject(types.ITokenService) private tokenService: ITokenService) {
     }
 
     tokenGuard = async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
@@ -26,28 +26,32 @@ export class AuthMiddleware implements IAuthMiddleware {
 
         if (token) {
             try {
-                let userData: UserData = await this.tokenService.verifyToken(token);
-                if (!userData.userId) {
+                let tokenData: Token = await this.tokenService.verifyToken(token);
+                if (!tokenData.userId) {
                     return res.status(HttpStatus.FORBIDDEN).json({
                         success: false,
                         message: 'Failed to authenticate token.'
                     });
                 } else {
-                    req['userId'] = userData.userId;
+                    req['userId'] = tokenData.userId;
                     next();
                 }
             } catch(e) {
                 logger.error(e);
-                return res.status(HttpStatus.FORBIDDEN).json({
-                    success: false,
-                    message: 'Failed to authenticate token.'
-                });
+                return res
+                    .status(HttpStatus.FORBIDDEN)
+                    .json({
+                        success: false,
+                        message: 'Failed to authenticate token.'
+                    });
             }
         } else {
-            return res.status(HttpStatus.FORBIDDEN).json({
-                success: false,
-                message: 'No token provided.'
-            });
+            return res
+                .status(HttpStatus.FORBIDDEN)
+                .json({
+                    success: false,
+                    message: 'No token provided.'
+                });
         }
     }
 }

@@ -2,7 +2,7 @@ const gulp = require('gulp');
 const ts = require('gulp-typescript');
 const sourcemaps = require('gulp-sourcemaps');
 const nodemon = require('gulp-nodemon');
-const JSON_FILES = ['src/*.json', 'src/**/*.json'];
+const JSON_FILES = ['src/*.json', 'src/**/*.json', '.env'];
 const OUTPUT = './dist';
 
 const tsProject = ts.createProject('tsconfig.json');
@@ -61,4 +61,5 @@ gulp.task('start:debug', ['scripts-debug', 'assets', 'watch'], function (done) {
 });
 
 gulp.task('build', ['scripts', 'assets', 'package']);
+gulp.task('build:debug', ['scripts-debug', 'assets', 'package']);
 

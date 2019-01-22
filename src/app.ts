@@ -4,7 +4,7 @@ import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
 import * as helmet from 'helmet';
 import { HttpStatus } from './server/httpStatus';
-import { IIndexRoute } from './core/routes';
+import { IAuthRoute, IIndexRoute } from './core/routes';
 import { container, types } from './core';
 import config from './config';
 import * as swaggerJsdoc from 'swagger-jsdoc';
@@ -78,9 +78,14 @@ export default class App {
 	}
 
 	private customRoutes() {
-		const indexRoute = container.get<IIndexRoute>(types.INDEX_ROUTE);
+		const routes = [
+			container.get<IIndexRoute>(types.IIndexRoute),
+			container.get<IAuthRoute>(types.IAuthRoute)
+		];
 
-        this.express.use(this.apiUrl, indexRoute.getRouter());
+		routes.forEach((route) => {
+			this.express.use(this.apiUrl, route.getRouter());
+		});
 
         if (config.swagger) {
         	const swagger = this.getSwaggerSpecs();
@@ -89,8 +94,12 @@ export default class App {
     }
 
     private getSwaggerSpecs(): any {
-        let url = './core/routes/*.yaml';
-
+		let url = '';
+		if (config.mode === 'development') {
+			url = './src/core/routes/*.yaml';
+		} else {
+			url = './core/routes/*.yaml';
+		}
         const options = {
             swaggerDefinition: {
                 info: {

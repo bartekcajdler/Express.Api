@@ -1,5 +1,3 @@
-import mode from './mode';
-
 export interface IConfig {
     version: string;
     env: string;
@@ -13,6 +11,7 @@ export interface IConfig {
     logs_folder: string;
     token_expires: number | string;
     token_secret: string;
+    password_secret: string;
     db_host: string;
     db_user: string;
     db_password: string;
@@ -28,6 +27,7 @@ export interface IConfig {
     password: string,
 }
 
+const mode = process.env.NODE_ENV;
 let config: IConfig = require(`../config.${mode}.json`);
 config.mode = mode;
 

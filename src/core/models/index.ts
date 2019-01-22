@@ -1,1 +1,1 @@
-export * from './user-data.model';
+export * from './token.model';
