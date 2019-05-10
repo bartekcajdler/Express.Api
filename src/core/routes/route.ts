@@ -7,7 +7,7 @@ export interface IRotue {
 
 @injectable()
 export abstract class Route {
-    router: Router;
+    protected router: Router;
 
     constructor() {
         this.router = Router();
@@ -17,5 +17,5 @@ export abstract class Route {
         return this.router;
     }
 
-    abstract onInit(): void;
+    abstract intializeRoutes(): void;
 }

@@ -1,4 +1,6 @@
-const types = {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var types = {
     SERVICES: {
         ITokenService: Symbol.for('token.service'),
         IUtlisService: Symbol.for('utils.service'),
@@ -16,5 +18,4 @@ const types = {
         IAuthRoute: Symbol.for('auth.route')
     }
 };
-
-export { types };
+exports.types = types;

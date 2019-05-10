@@ -1,28 +1,31 @@
 import { inject, injectable } from 'inversify';
 import { Request, Response } from 'express';
-import { HttpStatus } from '../../server/httpStatus';
-import { IRotue, Route } from './route';
-import { IAuthMiddleware } from '../middlewares';
-import { types } from '../index';
-import config from '../../config';
+import { HttpStatus } from '../../../server/http-status';
+import { IRotue, Route } from '../route';
+import { IAuthMiddleware } from '../../middlewares';
+import { types } from '../../index';
+import config from '../../../config';
 import * as ip from 'ip';
-import { IUserService } from "../services";
+import { IUserService } from "../../services";
 
 export interface IIndexRoute extends IRotue {
+    getApiVersion : (req: Request, res: Response) => Promise<Response>,
+    getPing: (req: Request, res: Response) => Promise<Response>,
+    getUser: (req: Request, res: Response) => Promise<Response>
 }
 
 @injectable()
 export class IndexRoute extends Route implements IIndexRoute {
 
     constructor(
-        @inject(types.IAuthMiddleware) private authMiddleware: IAuthMiddleware,
-        @inject(types.IUserService) private userService: IUserService,
+        @inject(types.MIDDLEWARES.IAuthMiddleware) private authMiddleware: IAuthMiddleware,
+        @inject(types.SERVICES.IUserService) private userService: IUserService,
     ) {
         super();
-        this.onInit();
+        this.intializeRoutes();
     }
 
-    onInit(): void {
+    intializeRoutes(): void {
         this.router.get('/', this.getApiVersion);
         this.router.get('/ping', this.getPing);
         this.router.get('/ping-auth', this.authMiddleware.tokenGuard, this.getPing);
@@ -31,7 +34,7 @@ export class IndexRoute extends Route implements IIndexRoute {
 
     getApiVersion = async (req: Request, res: Response): Promise<Response> => {
         return res.status(HttpStatus.OK).json({
-            message: `Payments API works. API version: ${config.version}. Time: ${new Date()}`,
+            message: `API works. API version: ${config.version}. Time: ${new Date()}`,
             address: ip.address(),
             env: config.mode
         });

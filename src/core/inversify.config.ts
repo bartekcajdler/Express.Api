@@ -2,22 +2,22 @@ import { Container, interfaces } from 'inversify';
 import { types } from './inversify.types';
 import { IAuthMiddleware, AuthMiddleware } from './middlewares';
 import { AuthRoute, IAuthRoute, IIndexRoute, IndexRoute } from './routes';
+import { IUserRepository, UserRepository } from "./repositories";
+import { getCustomRepository } from "typeorm";
+import Factory = interfaces.Factory;
 import {
     IUtlisService, UtlisService,
     IPasswordService, PasswordService,
     ITokenService, TokenService,
     IUserService, UserService
 } from './services';
-import { IUserRepository, UserRepository } from "./repositories";
-import { EntityManager } from "typeorm";
-import { getCustomRepository } from "typeorm";
-import Factory = interfaces.Factory;
 
+const { REPOSITORIES, SERVICES, MIDDLEWARES, ROUTES } = types;
 const container = new Container();
 
 // REPOSITORIES
 container
-    .bind<Factory<IUserRepository>>(types.IUserRepository)
+    .bind<Factory<IUserRepository>>(REPOSITORIES.IUserRepository)
     .toFactory<IUserRepository>(() => {
             return () => {
                 return getCustomRepository(UserRepository);
@@ -26,16 +26,16 @@ container
     );
 
 // SERVICES
-container.bind<ITokenService>(types.ITokenService).to(TokenService);
-container.bind<IUtlisService>(types.IUtlisService).to(UtlisService);
-container.bind<IPasswordService>(types.IPasswordService).to(PasswordService);
-container.bind<IUserService>(types.IUserService).to(UserService);
+container.bind<ITokenService>(SERVICES.ITokenService).to(TokenService);
+container.bind<IUtlisService>(SERVICES.IUtlisService).to(UtlisService);
+container.bind<IPasswordService>(SERVICES.IPasswordService).to(PasswordService);
+container.bind<IUserService>(SERVICES.IUserService).to(UserService);
 
 // MIDDLEWARES
-container.bind<IAuthMiddleware>(types.IAuthMiddleware).to(AuthMiddleware);
+container.bind<IAuthMiddleware>(MIDDLEWARES.IAuthMiddleware).to(AuthMiddleware);
 
 // ROUTES
-container.bind<IIndexRoute>(types.IIndexRoute).to(IndexRoute);
-container.bind<IAuthRoute>(types.IAuthRoute).to(AuthRoute);
+container.bind<IIndexRoute>(ROUTES.IIndexRoute).to(IndexRoute);
+container.bind<IAuthRoute>(ROUTES.IAuthRoute).to(AuthRoute);
 
 export { container };

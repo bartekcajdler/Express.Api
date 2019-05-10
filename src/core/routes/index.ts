@@ -1,3 +1,3 @@
 // Routes
-export * from './index.route';
-export * from './auth.route';
+export * from './index/index.route';
+export * from './auth/auth.route';

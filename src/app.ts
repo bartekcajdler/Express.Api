@@ -3,9 +3,7 @@ import { Application, Request, Response, Errback, NextFunction } from 'express';
 import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
 import * as helmet from 'helmet';
-import { HttpStatus } from './server/httpStatus';
-import { IAuthRoute, IIndexRoute } from './core/routes';
-import { container, types } from './core';
+import { HttpStatus } from './server/http-status';
 import config from './config';
 import * as swaggerJsdoc from 'swagger-jsdoc';
 import * as swaggerUi from 'swagger-ui-express';
@@ -14,15 +12,15 @@ import * as Guid from 'uuid/v1';
 export default class App {
 
 	private readonly express: Application;
-	private apiUrl: string = `/api/${config.api_version_url}`;
-	private docUrl: string = `/api-docs`;
+	private apiUrl: string = `/${config.api_url}/${config.api_version_url}`;
+	private docUrl: string = `/${config.doc_url}`;
 
-	constructor() {
+	constructor(routes: any[]) {
 		this.express = express();
 		this.security();
 		this.port();
 		this.middleware();
-		this.routes();
+		this.routes(routes);
 	}
 
 	public getInstance(): Application {
@@ -46,7 +44,7 @@ export default class App {
 		this.express.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 	}
 
-	private routes(): void {
+	private routes(routes: any[]): void {
 
 		this.express.all('*', (req: Request, res: Response, next: NextFunction) => {
 			res.header('Access-Control-Allow-Origin', '*');
@@ -60,7 +58,7 @@ export default class App {
 			next();
 		});
 
-		this.customRoutes();
+		this.customRoutes(routes);
 
 		this.express.use((req: Request, res: Response) => {
 			res.status(HttpStatus.NOT_FOUND).json({
@@ -77,11 +75,7 @@ export default class App {
 		});
 	}
 
-	private customRoutes() {
-		const routes = [
-			container.get<IIndexRoute>(types.IIndexRoute),
-			container.get<IAuthRoute>(types.IAuthRoute)
-		];
+	private customRoutes(routes: any[]) {
 
 		routes.forEach((route) => {
 			this.express.use(this.apiUrl, route.getRouter());
@@ -96,9 +90,9 @@ export default class App {
     private getSwaggerSpecs(): any {
 		let url = '';
 		if (config.mode === 'development') {
-			url = './src/core/routes/*.yaml';
+			url = './src/core/routes/**/*.yaml';
 		} else {
-			url = './core/routes/*.yaml';
+			url = './core/routes/**/*.yaml';
 		}
         const options = {
             swaggerDefinition: {

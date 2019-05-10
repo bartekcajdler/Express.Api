@@ -1,9 +1,10 @@
 {
      "version": "1.0.0",
      "env": "debug",
+     "api_url": "api",
+     "doc_url": "doc-api",
      "api_version_url": "v1",
      "port_http": 80,
-     "port_http_default": 80,
      "port_https": 443,
      "express_logs": false,
      "level": "info",

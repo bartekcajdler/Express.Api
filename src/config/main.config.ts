@@ -1,6 +1,8 @@
 export interface IConfig {
     version: string;
     env: string;
+    api_url: string;
+    doc_url: string;
     api_version_url: string;
     port_http: number;
     port_http_default: number;
@@ -28,7 +30,7 @@ export interface IConfig {
 }
 
 const mode = process.env.NODE_ENV;
-let config: IConfig = require(`../config.${mode}.json`);
+let config: IConfig = require(`../config.${mode ? mode : 'development'}.json`);
 config.mode = mode;
 
 export { config };

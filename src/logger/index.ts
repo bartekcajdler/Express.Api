@@ -7,7 +7,7 @@ import { ConsoleTransportOptions } from "winston/lib/winston/transports";
 const { combine, timestamp, prettyPrint, printf, label, colorize } = format;
 
 const customFormat = printf(info => {
-    return `${info.timestamp} [${info.label}] ${info.level}: ${info.message}`;
+    return `${info.timestamp} [${info.label}] ${info.level}: ${info.message ? info.message : JSON.stringify(info)}`;
 });
 
 const consoleTransportOptionsFormat = combine(

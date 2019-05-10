@@ -16,8 +16,8 @@ export class UserService implements IUserService {
     private userRepository: IUserRepository;
 
     constructor(
-        @inject(types.IPasswordService) private passwordService: IPasswordService,
-        @inject(types.IUserRepository) private userRepositoryFactory: () => IUserRepository) {
+        @inject(types.SERVICES.IPasswordService) private passwordService: IPasswordService,
+        @inject(types.REPOSITORIES.IUserRepository) private userRepositoryFactory: () => IUserRepository) {
         this.userRepository = userRepositoryFactory();
     }
 

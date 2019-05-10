@@ -1,29 +1,30 @@
-import * as joi from 'joi';
 import { inject, injectable } from 'inversify';
 import { Request, Response } from 'express';
-import { HttpStatus } from '../../server/httpStatus';
-import { IRotue, Route } from './route';
-import { types } from '../index';
-import { ITokenService, IUserService } from '../services';
-import { loginValidator } from '../validators/login.validator';
-import logger from '../../logger';
-import { Login } from "../models/login.model";
+import { HttpStatus } from '../../../server/http-status';
+import { IRotue, Route } from '../route';
+import { types } from '../../index';
+import { ITokenService, IUserService } from '../../services';
+import { loginValidator } from '../../validators/login.validator';
+import logger from '../../../logger';
+import { Login } from "../../models/login.model";
+import * as joi from 'joi';
 
 export interface IAuthRoute extends IRotue {
+    createToken: (req: Request, res: Response) => Promise<Response>,
 }
 
 @injectable()
 export class AuthRoute extends Route implements IAuthRoute {
 
     constructor(
-        @inject(types.ITokenService) private tokenService: ITokenService,
-        @inject(types.IUserService) private userService: IUserService
+        @inject(types.SERVICES.ITokenService) private tokenService: ITokenService,
+        @inject(types.SERVICES.IUserService) private userService: IUserService
     ) {
         super();
-        this.onInit();
+        this.intializeRoutes();
     }
 
-    onInit(): void {
+    intializeRoutes(): void {
         this.router.post('/token', this.createToken);
     }
 

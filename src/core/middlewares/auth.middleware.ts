@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify';
 import { Request, Response, NextFunction } from 'express';
-import { HttpStatus } from '../../server/httpStatus';
+import { HttpStatus } from '../../server/http-status';
 import { Token } from '../models/token.model';
 import { types } from '../index';
 import { ITokenService } from '../services';
@@ -14,7 +14,7 @@ export interface IAuthMiddleware {
 export class AuthMiddleware implements IAuthMiddleware {
 
     constructor(
-        @inject(types.ITokenService) private tokenService: ITokenService) {
+        @inject(types.SERVICES.ITokenService) private tokenService: ITokenService) {
     }
 
     tokenGuard = async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
